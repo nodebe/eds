@@ -1,0 +1,101 @@
+{% extends 'layout.html' %}
+{% block body %}
+<div class="page-content">
+<div class="jumbotron bg-primary text-white text-center mt-n5">
+  <h1>FINAID7</h1>
+  <p>Evolve to financial freedom with minimal risk</p><br>
+  <a href="#content" class="btn btn-outline-light text-white mb-n2">Learn more</a>
+  <a href="{{url_for('users.signup')}}" class="btn btn-light text-primary mb-n2">Register</a>
+</div>
+
+<h5 class="mt-3 mb-3 ml-1">About us</h5>
+<div class="card" id="content">
+    <div class="card-body">
+      <p class="card-text">Finaid7 is a member to member platform with the sole aim to help its members evolve from financial bondage to financial freedom with minimal risk as all members are to start with just N1000</p>
+    </div>
+</div>
+<h5 class="mt-4 mb-3 ml-1">How it works</h5>
+<div class="card">
+	<div class="card-body">
+		<p class="text-muted card-text mb-4 pb-2">Finaid7 is a platform that create wealth using crowd funding or member to member donation. This means that every member gives financial aid and also gets financial aid after some stipulated time period as they progress in levels. When a member donates money, it is given directly to another member not to the platform, this platform only serves a middle man to bring donors together</p>
+		<p class="border p-3">
+		  <a data-toggle="collapse" href="#levelOne" role="button" aria-expanded="false" aria-controls="levelOne">
+		    Level 1
+		  </a>
+		</p>
+		<div class="collapse" id="levelOne">
+		  <div class="card card-body">
+			This is the first level of finaid7 where you are required to give financial aid of N1000 and get financial aid of N3000 within 24 hours (1 day) of giving aid.<br>
+		  </div>
+		</div>
+
+		<p class="border p-3">
+		  <a data-toggle="collapse" href="#levelTwo" role="button" aria-expanded="false" aria-controls="levelTwo">
+		    Level 2
+		  </a>
+		</p>
+		<div class="collapse" id="levelTwo">
+		  <div class="card card-body">
+			 This is the second level of finaid7. Here you are required to give financial aid of N2500 and get financial aid of N5000 in 48 hours (2 days) but in order to avoid premature withdrawal which may lead to failure of the system, you can only withdraw N2500 at a time, when you've paid out the first N2500, you can withdraw the other N2500 and upgrade to the third level.
+		  </div>
+		</div>
+
+		<p class="border p-3">
+		  <a data-toggle="collapse" href="#levelThree" role="button" aria-expanded="false" aria-controls="levelThree">
+		    Level 3
+		  </a>
+		</p>
+		<div class="collapse" id="levelThree">
+		  <div class="card card-body">
+			 This is the third and final level of Finaid7. Here, you are required to give financial aid of N5000 (which is made up of the N2500 recommitment in level 2 and a level 3 commitment of N2500) and get financial aid of N10000 after 4 days and this concludes the financial journey you started with just N1000.
+			 <br>
+			Note: On being paid in level 3, you will be required to commit your initial payment of N2500 which gives you access to start over in level 2 after collecting your complete pay in level 3 and also a referral of at least one active user.
+		  </div>
+		</div>
+		<h5 class="mt-4 mb-3 ml-1">FinAid7 Earnings</h5>
+		<div class="table-responsive table-bordered">
+			<table class="table text-center">
+				<thead>
+					<tr>
+						<th>Level</th>
+						<th>Commit</th>
+						<th>Receive</th>
+						<th>Recommit</th>
+						<th>Time</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr>
+						<td>Level 1</td>
+						<td>N1000</td>
+						<td>N3000</td>
+						<td>N0</td>
+						<td>1 day</td>
+					</tr>
+					<tr>
+						<td>Level 2</td>
+						<td>N2500</td>
+						<td>N5000</td>
+						<td>N2500</td>
+						<td>2 days</td>
+					</tr>
+					<tr>
+						<td>Level 3</td>
+						<td>N5000</td>
+						<td>N10000</td>
+						<td>N2500</td>
+						<td>4 days</td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+		<h5 class="mt-4 mb-2 ml-1">Merging process</h5>
+		<p class="text-muted card-text mb-4 pb-2">Merging is done automatically and you are merged immediately once you are due to provide aid to someone. Please endeavour to pay up before the 12 hours mark expires if not you risk your transaction being disputed and your account being blocked.</p>
+		
+		<p class="lead">Begin Aiding Now</p>
+  		<a href="{{url_for('users.signin')}}" class="btn btn-primary text-white mb-n2">Login</a>
+  		<a href="{{url_for('users.signup')}}" class="btn btn-info text-white mb-n2">Register</a>
+	</div>
+</div>
+</div>
+{% endblock %}

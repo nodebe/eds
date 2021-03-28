@@ -1,0 +1,394 @@
+{% extends 'layout.html' %}
+{% block body %}
+<div class="page-content">
+  <nav class="page-breadcrumb">
+    <ol class="breadcrumb">
+      <li class="breadcrumb-item"><a href="/">Home</a></li>
+      <li class="breadcrumb-item active" aria-current="page">Dashboard</li>
+    </ol>
+  </nav>
+  <div class="row">
+    <div class="col-md-12 grid-margin stretch-card">
+      <div class="card">
+        <div class="card-body">
+          <h4 class="card-title">Level {{current_user.upgrade_id.level}}</h4>
+            <p class="card-description mb-0">Referral Link: <span id="referText" class="border">https://www.finaid7.com/index/{{current_user.uuid}}</span> &nbsp<i data-feather="copy" class="border border-primary p-1" onclick="clickToCopy('#referText')" title="Copy to Clipboard"></i></p>
+        </div>
+        <p class="card-footer">Qualified to be merged: 
+          {%if merged_date[0] == True%}
+            Now
+          {% elif merged_date == None%}
+            Not qualified
+          {% else %}
+          {{merged_date[1].strftime('%d-%b-%Y %H:%M %p')}}
+          {% endif %}
+          {% if current_user.upgrade_id.level == 0 %}
+            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#aidingModal">
+            Begin Aiding
+            </button>
+          {%endif%}
+        </p>
+      </div>
+    </div>
+  </div>
+      <!-- Modal -->
+      <div class="modal fade" id="aidingModal" tabindex="-1" role="dialog" aria-labelledby="confirmModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="confirmModalLabel">Begin Aiding</h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body">
+              Are you sure? <br> <span class="text-muted">You will be merged to pay a user!</span>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+              <a href="{{url_for('users.begin_aiding')}}" class="btn btn-primary">Confirm</a>
+            </div>
+          </div>
+        </div>
+      </div>
+  {% if merged_to_pay != None %}
+  <div class="row">
+      <div class="col-md-4 grid-margin stretch-card">
+        <div class="card">
+          <div class="card-body d-flex flex-column align-items-center">
+            <p class="card-description">Send Aid to</p>
+            <p>Username: {{receiver.username}}</p>
+            <p>Acc name: {{receiver.acc_name}}</p>
+            <p>Acc number: {{receiver.acc_number}}</p>
+            <p>Bank: {{receiver.bank_name}}</p>
+            <p>Phone: {{receiver.phone}}</p>
+            <p>Amount: N{{merged_to_pay.amount}}</p>
+            <p>Reference: {{merged_to_pay.merge_id}}</p>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-8 grid-margin stretch-card">
+        <div class="card">
+          <div class="card-body d-flex flex-column ">
+            <form class="forms-sample" method="post" action="{{url_for('users.uploadproof')}}" enctype="multipart/form-data">
+            {{ upform.hidden_tag() }}
+            {% from 'includes/_formhelpers.html' import render_field %}
+      <div class="form-group">
+        <label class="card-description">Upload proof</label>
+        <input type="file" class="file-upload-default">
+        <div class="input-group col-xs-12">
+          {{render_field(upform.image, class_='form-control file-upload-info', placeholder="Upload Image")}}
+        </div>
+      </div>
+      {% if time_remaining[0] > -1 and merged_to_pay.confirm_image == None %}
+      <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#paidModal">
+        I have paid
+      </button>
+      <!-- Modal -->
+      <div class="modal fade" id="paidModal" tabindex="-1" role="dialog" aria-labelledby="confirmModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="confirmModalLabel">Confirm payment</h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body">
+              Are you sure? <br> <span class="text-muted">This cannot be reverted!</span>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+              <button type="submit" class="btn btn-primary">Confirm</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      {% endif %}
+      </form>
+      <span class="mt-3">Time merged: {{merged_to_pay.time_merged}}</span>
+      {% if merged_to_pay.expired == 1 %}
+      <span class="text-danger">Time remaining: Expired</span>
+      {% else %}
+      <span class="text-success">Time remaining: {{time_remaining[0]}} hours {{time_remaining[1]}} minutes left</span>
+      {% endif %}
+          </div>
+        </div>
+      </div>
+    </div>
+    {% endif %}
+    {% if merged_to_receive != [] %}
+    {% for info in merged_to_receive %}
+      <div class="row">
+        <div class="col-md-4 grid-margin stretch-card">
+          <div class="card">
+            <div class="card-body d-flex flex-column align-items-center">
+              <p class="card-description">Receive Aid from</p>
+              <p>Username: {{info.payer.username}}</p>
+              <p>Phone: {{info.payer.phone}}</p>
+              <p>Amount: N{{info.amount}}</p>
+              <p>Reference: {{info.merge_id}}</p>
+        <!-- Button trigger modal -->
+        <button type="button" class="btn btn-primary mt-1" data-toggle="modal" data-target="#confirmPayment-{{info.id}}">
+          I have been paid
+        </button>
+        <!-- Modal -->
+        <div class="modal fade" id="confirmPayment-{{info.id}}" tabindex="-1" role="dialog" aria-labelledby="confirmModalLabel" aria-hidden="true">
+          <div class="modal-dialog" role="document">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" id="confirmModalLabel">Confirm payment</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+              <div class="modal-body">
+                Are you sure? <br> <span class="text-muted">This cannot be reverted!</span>
+                {% if (current_user.upgrade_id.level == 2 and current_user.upgrade_id.level_2_pay==0) %}
+                  <p>You will be merged immediately for recommitment!</p>
+                {% elif (current_user.upgrade_id.level == 3 and current_user.upgrade_id.level_3_pay==0) %}
+                  <p>You will be merged immediately for recommitment!</p>
+                {% endif %}
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <a href="{{url_for('users.confirmpayment', payment_id=info.id)}}" type="button" class="btn btn-primary">Confirm</a>
+              </div>
+            </div>
+          </div>
+        </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-8 grid-margin stretch-card">
+          <div class="card">
+            <div class="card-body d-flex flex-column ">
+        <label class="card-description">Proof</label>
+        {% if info.confirm_image != None %}
+        <img src="../static/assets/images/{{info.confirm_image}}">
+        <span class="mt-3">Time uploaded: {{info.time_merged}}</span>
+        {% else %}
+        <p>No proof yet!</p>
+        <span class="mt-3">Time merged: {{info.time_merged}}</span>
+        {% endif %}
+        {% if info.expired == 1 %}
+        <span class="text-danger">Time remaining: Expired</span>
+        <button type="button" class="btn btn-secondary col-md-2" data-toggle="modal" data-target="#disputePayment-{{info.id}}">
+          Not paid
+        </button>
+        <p class="text-muted mt-1">If you have been paid click on 'I have been paid' if not Click 'Not paid'</p>
+        {% else %}
+        <span class="text-success">Time remaining: {{merge_timers[info.id]['time_remaining'][0]}} hours {{merge_timers[info.id]['time_remaining'][1]}} minutes left</span>
+        {% endif %}
+            </div>
+          </div>
+        </div>
+      <div class="modal fade" id="disputePayment-{{info.id}}" tabindex="-1" role="dialog" aria-labelledby="confirmModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="confirmModalLabel">Confirm dispute</h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body">
+              Are you sure? <br> <span class="text-muted">This cannot be reverted!</span>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+              <a href="{{url_for('users.disputepayment', payment_id=info.id)}}" type="button" class="btn btn-primary">Confirm</a>
+            </div>
+          </div>
+        </div>
+      </div>
+      </div>
+    {% endfor %}
+    {% endif %}
+    <div class="row">
+    <div class="col-md-12">
+            <div class="card">
+              <div class="card-body">
+                <h4 class="text-center mb-3 mt-4">Upgrade</h4>
+                <p class="text-muted text-center mb-4 pb-2">Click the upgrade button once you are done with a particular level.</p>
+                <div class="container">  
+                  <div class="row">
+                    <div class="col-md-4 stretch-card grid-margin grid-margin-md-0">
+                      <div class="card">
+                        <div class="card-body">
+                          <h5 class="text-center text-uppercase mt-3 mb-4">Level 1</h5>
+                          <i data-feather="award" class="text-primary icon-xxl d-block mx-auto my-3"></i>
+                          <h6 class="text-muted text-center mb-4 font-weight-normal">Pay N1000</h6>
+                          <div class="d-flex align-items-center mb-2">
+                            {% if merged_date[0] == True or current_user.upgrade_id.level_1_out == 1 %}
+                            <i data-feather="check" class="icon-md text-primary mr-2"></i>
+                            {% else %}
+                            <i data-feather="x" class="icon-md text-danger mr-2"></i>
+                            {% endif %}
+                            <p>24 hrs wait</p>
+                          </div>
+                          <div class="d-flex align-items-center mb-2">
+                            {% if current_user.upgrade_id.level_1_pay >= 3 %}
+                            <i data-feather="check" class="icon-md text-primary mr-2"></i>
+                            {% else %}
+                            <i data-feather="x" class="icon-md text-danger mr-2"></i>
+                            {% endif %}
+                            <p>Receive N3000 ({{current_user.upgrade_id.level_1_pay * 1000}}/3000)</p>
+                          </div>
+                          <div class="d-flex align-items-center mb-2">
+                            {% if current_user.upgrade_id.level_1_pay >= 3 %}
+                            <i data-feather="check" class="icon-md text-primary mr-2"></i>
+                            {% else %}
+                            <i data-feather="x" class="icon-md text-danger mr-2"></i>
+                            {% endif %}
+                            <p>Earn passive</p>
+                          </div>
+                          <div class="d-flex align-items-center mb-2">
+                            {% if current_user.upgrade_id.refer_count > 0 or current_user.upgrade_id.level_1_out==1 %}
+                            <i data-feather="check" class="icon-md text-success mr-2"></i>
+                            {% else %}
+                            <i data-feather="x" class="icon-md text-danger mr-2"></i>
+                            {% endif %}
+                            <p>Refer 3 people ({{current_user.upgrade_id.refer_count}})</p>
+                          </div>
+                          {% if current_user.upgrade_id.level == 1 and current_user.upgrade_id.level_1_pay == 3 %}
+                          <button type="button" class="btn btn-primary mt-1" data-toggle="modal" data-target="#upgradeUser">
+                            Upgrade
+                          </button>
+                          {% else %}
+                          <button class="btn btn-primary d-block mx-auto mt-4" disabled>Upgrade</button>
+                          {% endif %}
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-md-4 stretch-card grid-margin grid-margin-md-0">
+                      <div class="card">
+                        <div class="card-body">
+                          <h5 class="text-center text-uppercase mt-3 mb-4">Level 2</h5>
+                          <i data-feather="gift" class="text-success icon-xxl d-block mx-auto my-3"></i>
+                          <h6 class="text-muted text-center mb-4 font-weight-normal">Pay N2500</h6>
+                          <div class="d-flex align-items-center mb-2">
+                            {% if current_user.upgrade_id.level_2_status == 1 %}
+                            <i data-feather="check" class="icon-md text-success mr-2"></i>
+                            {% else %}
+                            <i data-feather="x" class="icon-md text-danger mr-2"></i>
+                            {% endif %}
+                            <p>Commit N2500</p>
+                          </div>
+                          <div class="d-flex align-items-center mb-2">
+                            {% if (current_user.upgrade_id.level == 2 and merged_date[0] == True) or (current_user.upgrade_id.level == 3) %}
+                            <i data-feather="check" class="icon-md text-success mr-2"></i>
+                            {% else %}
+                            <i data-feather="x" class="icon-md text-danger mr-2"></i>
+                            {% endif %}
+                            <p>48 hrs wait</p>
+                          </div>
+                          <div class="d-flex align-items-center mb-2">
+                            {% if current_user.upgrade_id.level_2_pay == 2 %}
+                            <i data-feather="check" class="icon-md text-success mr-2"></i>
+                            {% else %}
+                            <i data-feather="x" class="icon-md text-danger mr-2"></i>
+                            {% endif %}
+                            <p>Receive N5000 ({{current_user.upgrade_id.level_2_pay * 2500}}/5000)</p>
+                          </div>
+                          <div class="d-flex align-items-center mb-2">
+                            {% if current_user.upgrade_id.level_2_out == 1 %}
+                            <i data-feather="check" class="icon-md text-success mr-2"></i>
+                            {% else %}
+                            <i data-feather="x" class="icon-md text-danger mr-2"></i>
+                            {% endif %}
+                            <p>Recommit N2500</p>
+                          </div>
+                          {% if current_user.upgrade_id.level == 2 and current_user.upgrade_id.level_2_pay == 2 %}
+                          <button type="button" class="btn btn-primary mt-1" data-toggle="modal" data-target="#upgradeUser">
+                            Upgrade
+                          </button>
+                          {% else %}
+                          <button class="btn btn-primary d-block mx-auto mt-4" disabled>Upgrade</button>
+                          {% endif %}
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-md-4 stretch-card">
+                      <div class="card">
+                        <div class="card-body">
+                          <h5 class="text-center text-uppercase mt-3 mb-4">Level 3</h5>
+                          <i data-feather="briefcase" class="text-primary icon-xxl d-block mx-auto my-3"></i>
+                          <h6 class="text-muted text-center mb-4 font-weight-normal">Pay N5000</h6>
+                          <div class="d-flex align-items-center mb-2">
+                            {% if current_user.upgrade_id.level == 3 and current_user.upgrade_id.level_3_status == 1 %}
+                            <i data-feather="check" class="icon-md text-success mr-2"></i>
+                            {% else %}
+                            <i data-feather="x" class="icon-md text-danger mr-2"></i>
+                            {% endif %}
+                            <p>Commit N5000</p>
+                          </div>
+                          <div class="d-flex align-items-center mb-2">
+                            {% if current_user.upgrade_id.level == 3 and merged_date[0] == True %}
+                            <i data-feather="check" class="icon-md text-success mr-2"></i>
+                            {% else %}
+                            <i data-feather="x" class="icon-md text-danger mr-2"></i>
+                            {% endif %}
+                            <p>4 days wait</p>
+                          </div>
+                          <div class="d-flex align-items-center mb-2">
+                            {% if current_user.upgrade_id.level_3_pay == 4 and current_user.upgrade_id.level == 3 %}
+                            <i data-feather="check" class="icon-md text-success mr-2"></i>
+                            {% else %}
+                            <i data-feather="x" class="icon-md text-danger mr-2"></i>
+                            {% endif %}
+                            <p>Receive N10000 ({{current_user.upgrade_id.level_3_pay * 2500}}/10000)</p>
+                          </div>
+                          <div class="d-flex align-items-center mb-2">
+                            {% if current_user.upgrade_id.level == 3 and current_user.upgrade_id.level_3_out == 1 %}
+                            <i data-feather="check" class="icon-md text-success mr-2"></i>
+                            {% else %}
+                            <i data-feather="x" class="icon-md text-danger mr-2"></i>
+                            {% endif %}
+                            <p>Recommit N2500</p>
+                          </div>
+                          <div class="d-flex align-items-center mb-2">
+                            {% if current_user.upgrade_id.refer_count > 0 %}
+                            <i data-feather="check" class="icon-md text-success mr-2"></i>
+                            {% else %}
+                            <i data-feather="x" class="icon-md text-danger mr-2"></i>
+                            {% endif %}
+                            <p>Refer 1 person ({{current_user.upgrade_id.refer_count}})</p>
+                          </div>
+                          {% if current_user.upgrade_id.level == 3 and current_user.upgrade_id.level_3_pay == 4 and current_user.upgrade_id.refer_count > 0  %}
+                          <button type="button" class="btn btn-primary mt-1" data-toggle="modal" data-target="#upgradeUser">
+                            ReAid - L2
+                          </button>
+                          {% else %}
+                          <button class="btn btn-primary d-block mx-auto mt-4" disabled>ReAid - L2</button>
+                          {% endif %}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="modal fade" id="upgradeUser" tabindex="-1" role="dialog" aria-labelledby="confirmModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title" id="confirmModalLabel">Confirm dispute</h5>
+                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                  </button>
+                </div>
+                <div class="modal-body">
+                  Are you sure? <br> <span class="text-muted">You will be merged to aid immediately!</span>
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                  <a href="{{url_for('users.upgrade')}}" type="button" class="btn btn-primary">Confirm</a>
+                </div>
+              </div>
+            </div>
+          </div>
+    </div>
+  </div>
+</div>
+{% endblock body %}

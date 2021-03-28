@@ -1,0 +1,12 @@
+{% extends 'layout.html' %}
+{% block body %}
+	<div class="container-fluid mb-5">
+      <!-- 403 Error Text -->
+      <div class="text-center">
+        <div class="display-2 error mx-auto" data-text="403">403</div>
+        <p class="lead text-gray-800 mb-3">Forbidden Action</p>
+        <p class="text-gray-500 mb-2">You don't have the permission to perform that action!</p>
+        <a href="{{url_for('users.userdashboard')}}">&larr; Back to Free land</a>
+      </div>
+    </div>
+{% endblock body %}
