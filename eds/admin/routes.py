@@ -98,12 +98,13 @@ def createnewgrade():
 		abort(403)
 	form = NewGradeForm()
 	if form.validate_on_submit():
+		grade_name_department  = form.grade_name.data + ' ' + form.department.data.name
 		try:
-			grade_name = Grade.query.filter_by(name=form.grade_name.data, department_id=form.department.data.id).first()
+			grade_name = Grade.query.filter_by(name=grade_name_department, department_id=form.department.data.id).first()
 			if grade_name:
 				flash('Grade already exists!', 'warning')
 				return redirect(url_for('admin.createnewgrade'))
-			grade = Grade(name=form.grade_name.data,salary=form.salary.data,department_id=form.department.data.id)
+			grade = Grade(name=grade_name_department,salary=form.salary.data,department_id=form.department.data.id)
 			db.session.add(grade)
 			db.session.commit()
 			flash('Grade added successfully', 'success')
