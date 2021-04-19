@@ -1,7 +1,6 @@
 from flask import Flask, Blueprint, request, render_template, session, flash, redirect, url_for
 from eds.employees.forms import EmployeeLogForm, ChangePasswordForm
 from eds import db, app
-from eds.utils import unique_id
 from passlib.hash import sha256_crypt as sha256
 from flask_login import login_user, current_user, logout_user, login_required
 from eds.models import Employee
@@ -75,4 +74,4 @@ def changepassword():
 @login_required
 def logout():
 	logout_user()
-	return redirect(url_for('employees.signin'))
+	return redirect(url_for('main.index'))

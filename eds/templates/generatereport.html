@@ -1,0 +1,95 @@
+{% extends 'layout.html' %}
+{% block body %}
+<div class="main-wrapper mb-4">
+    <div class="page-wrapper full-page">
+      <div class="page-content d-flex align-items-center justify-content-center">
+        <div class="row w-100 mx-0 auth-page">
+          <div class="col-md-10 col-xl-12 mx-auto">
+            <div class="card">
+              <div class="row">
+                <div class="col-md-2 pr-md-0">
+                </div>
+                <div class="col-md-8 pl-md-0">
+                  <div class="auth-form-wrapper px-3 py-5">
+                    <a href="#" class="noble-ui-logo d-block mb-2"><h3>EDS</h3></a>
+                    <h5 class="text-muted font-weight-normal mb-4">Generate Report</h5>
+                    <form class="forms-sample" method="POST">
+                      {{ form.hidden_tag() }}
+                      {% from 'includes/_formhelpers.html' import render_field %}
+                      <div class="form-group">
+                      	<div class="row">
+                      		<div class="col-md-6 mr-auto">
+	                        	<label for="InputDepartment">Generate by </label>
+	                        	{{render_field(form.department, class_='form-control', id='InputDepartment', placeholder='Department name')}}
+	                    	</div>
+	                    	<div class="col-md-6 mr-auto">
+	                        	<label for="InputGrade">Generate by </label>
+	                        	{{render_field(form.grade, class_='form-control', id='InputGrade', placeholder='Pay Grade')}}
+	                    	</div>
+                    	</div>
+                    	<div class="row">
+                      		<div class="col-md-12 mr-auto">
+	                        	<label for="InputSalary">Generate by </label>
+	                        	{{render_field(form.salary, class_='form-control', id='InputSalary', placeholder='Salary')}}
+	                    	</div>
+                    	</div>
+                      </div>
+                      <div class="mt-3">
+                        <button type="submit" class="btn btn-primary mr-2 mb-2 mb-md-0 text-white">
+                          Generate Report
+                        </button>
+                      </div>
+                    </form>
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+            <div class="mt-4 table-responsive">
+	            <table class="table table-striped">
+				    <thead>
+				      <tr>
+				        <th>Firstname</th>
+				        <th>Lastname</th>
+				        <th>Email</th>
+				        <th>DOB</th>
+				        <th>DOJ</th>
+				        <th>Address</th>
+				        <th>Phone</th>
+				        <th>NIN</th>
+				        <th>Department</th>
+				        <th>Grade</th>
+				        <th>Salary</th>
+				      </tr>
+				    </thead>
+				    <tbody>
+				    	{% if report == [] %}
+				    	<tr>
+				    		<p class="text-center bg-warning p-3 text-white">No Data Found</p>
+				    	</tr>
+				    	{% endif %}
+				    	{% for i in report %}		    	
+				    	<tr>
+					        <td>{{i.firstname}}</td>
+					        <td>{{i.lastname}}</td>
+					        <td>{{i.email}}</td>
+					        <td>{{i.dob}}</td>
+					        <td>{{i.doj}}</td>
+					        <td>{{i.address}}, {{i.state}}</td>
+					        <td>{{i.phone}}</td>
+					        <td>{{i.nin}}</td>
+					        <td>{{i.employee_department.name}}</td>
+					        <td>{{i.employee_grade.name}}</td>
+					        <td>{{i.employee_grade.salary}}</td>
+					      </tr>
+				      	{% endfor %}
+				    </tbody>
+				</table>
+			</div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>	
+{% endblock %}

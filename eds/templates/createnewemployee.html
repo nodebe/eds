@@ -1,0 +1,111 @@
+{% extends 'layout.html' %}
+{% block body %}
+<div class="main-wrapper mb-4">
+    <div class="page-wrapper full-page">
+      <div class="page-content d-flex align-items-center justify-content-center">
+        <div class="row w-100 mx-0 auth-page">
+          <div class="col-md-10 col-xl-12 mx-auto">
+            <div class="card">
+              <div class="row">
+                <div class="col-md-2 pr-md-0">
+                </div>
+                <div class="col-md-8 pl-md-0">
+                  <div class="auth-form-wrapper px-3 py-5">
+                    <a href="#" class="noble-ui-logo d-block mb-2"><h3>EDS</h3></a>
+                    <h5 class="text-muted font-weight-normal mb-4">Create an Employee account.</h5>
+                    <form class="forms-sample" method="POST" enctype="multipart/form-data">
+                      {{ form.hidden_tag() }}
+                      {% from 'includes/_formhelpers.html' import render_field %}
+                      <div class="form-group">
+                      	<div class="row">
+                      		<div class="col-md-6 mr-auto">
+	                        	<label for="InputFirstname">Firstname</label>
+	                        	{{render_field(form.firstname, class_='form-control', id='InputFirstname', placeholder='Firstname')}}
+	                    	</div>
+	                    	<div class="col-md-6 mr-auto">
+	                    		<label for="InputLastname">Lastname</label>
+	                        	{{render_field(form.lastname, class_='form-control', id='InputLastname', placeholder='Lastname')}}
+	                    	</div>
+                    	</div>
+                      </div>
+                      <div class="form-group">
+                      	<div class="row">
+	                      	<div class="col-md-6 mr-auto">
+	                        	<label for="InputEmail">Email</label>
+	                        	{{render_field(form.email, class_='form-control', id='InputEmail', placeholder='Email', type='email')}}
+	                    	</div>
+	                    	<div class="col-md-6 mr-auto">
+	                    		<label for="InputLastname">Phone</label>
+	                        	{{render_field(form.phone, class_='form-control', id='InputPhone', placeholder='Phone', type='number')}}
+	                    	</div>
+                    	</div>
+                      </div>
+                      <div class="form-group">
+                      	<div class="row">
+                      		<div class="col-md-6 mr-auto">
+	                        	<label for="InputDob">Date of birth</label>
+	                        	{{render_field(form.dob, class_='form-control', id='InputDob', placeholder='Date of Birth', type='date')}}
+	                    	</div>
+	                    	<div class="col-md-6 mr-auto">
+	                    		<label for="InputLastname">Date of Entry</label>
+	                        	{{render_field(form.doj, class_='form-control', id='InputDoj', placeholder='Date of Entry', type='date')}}
+	                    	</div>
+                    	</div>
+                      </div>
+                      <div class="form-group">
+                      	<div class="row">
+	                      	<div class="col-md-6 mr-auto">
+	                        	<label for="InputEmail">Address</label>
+	                        	{{render_field(form.address, class_='form-control', id='InputAddress', placeholder='Address')}}
+	                    	</div>
+	                    	<div class="col-md-3 mr-auto">
+	                    		<label for="InputCity">City</label>
+	                        	{{render_field(form.city, class_='form-control', id='InputCity', placeholder='City')}}
+	                    	</div>
+	                    	<div class="col-md-3 mr-auto">
+	                    		<label for="InputState">State</label>
+	                        	{{render_field(form.state, class_='form-control', id='InputState', placeholder='State')}}
+	                    	</div>
+                    	</div>
+                      </div>
+                      <div class="form-group">
+                      	<div class="row">
+                      		<div class="col-md-6 mr-auto">
+	                        	<label for="InputNIN">NIN</label>
+	                        	{{render_field(form.nin, class_='form-control', id='InputNIN', placeholder='National Identification Number', type='number')}}
+	                    	</div>
+	                    	<div class="col-md-6 mr-auto">
+	                    		<label for="Inputidcard">ID Card</label>
+	                        	{{render_field(form.id_card, class_='form-control-file border', id='Inputidcard', placeholder='Identification Card')}}
+	                    	</div>
+                    	</div>
+                      </div>
+                      <div class="form-group">
+                      	<div class="row">
+                      		<div class="col-md-6 mr-auto">
+	                        	<label for="InputDepartment"></label>
+	                        	{{render_field(form.department, class_='form-control', id='InputDepartment', placeholder='Department')}}
+	                    	</div>
+	                    	<div class="col-md-6 mr-auto">
+	                    		<label for="InputGrade"></label>
+	                        	{{render_field(form.grade, class_='form-control', id='InputGrade', placeholder='Pay Grade')}}
+	                    	</div>
+                    	</div>
+                      </div>
+                      <div class="mt-3">
+                        <button type="submit" class="btn btn-primary mr-2 mb-2 mb-md-0 text-white">
+                          Create Employee
+                        </button>
+                      </div>
+                    </form>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+{% endblock %}

@@ -18,9 +18,11 @@ avatars = Avatars(app)
 
 
 from eds.employees.routes import employees
+from eds.main.routes import main
 from eds.admin.routes import admin
 from eds.errors.handlers import errors
 
 app.register_blueprint(employees)
+app.register_blueprint(main)
 app.register_blueprint(admin)
 app.register_blueprint(errors)

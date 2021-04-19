@@ -1,1 +1,45 @@
-<h1>Admin dashboard</h1>
+{% extends 'layout.html' %}
+{% block body %}
+<h2>Admin dashboard</h2><hr>
+<div class="container-fluid">
+<div class="row">
+  <div class="col-sm-6 mt-3">
+    <div class="card">
+      <div class="card-body">
+        <h5 class="card-title">Create New Employee</h5>
+        <p class="card-text">Click the button below to fill in the form containing new employee's information to store it in the database.</p>
+        <a href="{{url_for('admin.createnewemployee')}}" class="btn btn-primary">Create Employee</a>
+      </div>
+    </div>
+  </div>
+  <div class="col-sm-6 mt-3">
+    <div class="card">
+      <div class="card-body">
+        <h5 class="card-title">Create New Department</h5>
+        <p class="card-text">Click the button below to fill in the form containing new department's information to store it in the database.</p>
+        <a href="{{url_for('admin.createnewdepartment')}}" class="btn btn-primary">Create Department</a>
+      </div>
+    </div>
+  </div>
+  <div class="col-sm-6 mt-3">
+    <div class="card">
+      <div class="card-body">
+        <h5 class="card-title">Create New Grade</h5>
+        <p class="card-text">Click the button below to fill in the form containing new grade's information to store it in the database.</p>
+        <a href="{{url_for('admin.createnewgrade')}}" class="btn btn-primary">Create Grade</a>
+      </div>
+    </div>
+  </div>
+  <div class="col-sm-6 mt-3">
+    <div class="card">
+      <div class="card-body">
+        <h5 class="card-title">Generate Report</h5>
+        <p class="card-text">Click the button below to generate report of staff that are available in your company.</p>
+        <a href="{{url_for('admin.generatereport')}}" class="btn btn-primary">Generate Report</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+</div>
+{% endblock %}
